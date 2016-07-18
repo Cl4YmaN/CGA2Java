@@ -74,6 +74,13 @@ public class LoaderUtils {
 		// save VAO in RawModel
 		return new Model(vaoID, indices.length);
 	}
+	
+	public static Model loadToVao(float[] positions){
+		int vaoID = createVAO();
+		createVertexBuffer(0, 2, positions);
+		unbindVAO();
+		return new Model(vaoID, positions.length / 2);
+	}
 
 	public static Model loadTerrainVAO(float[] positions, float[] textureCoords, float[] normals, int[] indices) {
 		// create VAO and assign data

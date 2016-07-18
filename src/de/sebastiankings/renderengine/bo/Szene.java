@@ -6,6 +6,7 @@ import de.sebastiankings.renderengine.entities.Camera;
 import de.sebastiankings.renderengine.entities.Entity;
 import de.sebastiankings.renderengine.entities.PointLight;
 import de.sebastiankings.renderengine.shaders.EntityShaderProgram;
+import de.sebastiankings.renderengine.shaders.PassthroughShaderProgram;
 
 public class Szene {
 
@@ -16,6 +17,9 @@ public class Szene {
 	private List<Entity> entities;
 
 	private EntityShaderProgram entityShader;
+	private PassthroughShaderProgram passthrough;
+
+	
 
 	public Szene(List<Entity> entities, List<PointLight> lights, Camera camera, Inputs inputs) {
 		this.setEntities(entities);
@@ -62,5 +66,12 @@ public class Szene {
 
 	public void setEntities(List<Entity> entities) {
 		this.entities = entities;
+	}
+	public PassthroughShaderProgram getPassthrough() {
+		return passthrough;
+	}
+
+	public void setPassthrough(PassthroughShaderProgram passthrough) {
+		this.passthrough = passthrough;
 	}
 }
