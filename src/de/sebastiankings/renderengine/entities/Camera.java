@@ -13,7 +13,7 @@ public class Camera {
 	private static final Logger LOGGER = Logger.getLogger(Camera.class);
 	private static final float FOV = 70;
 	private static final Vector3f DEFAULT_UP = new Vector3f(0, 1, 0);
-	private static final float MOVE_FACTOR = 0.005f;
+	private static final float MOVE_FACTOR = 0.1f;
 
 	private Matrix4f viewMatrix = new Matrix4f();
 	private Matrix4f projectionMatrix = new Matrix4f();

@@ -36,4 +36,10 @@ public class SkyboxShaderProgramm extends ShaderProgram {
         super.bindAttribute(0, "position");
     }
 
+	@Override
+	protected void setFragDataLocations() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

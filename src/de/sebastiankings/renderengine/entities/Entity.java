@@ -6,6 +6,7 @@ import static org.lwjgl.opengl.GL30.*;
 
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
+import org.lwjgl.opengl.GL13;
 
 import de.sebastiankings.renderengine.shaders.EntityShaderProgram;
 import de.sebastiankings.renderengine.texture.Texture;
@@ -65,7 +66,7 @@ public class Entity extends BaseEntity {
 		glEnableVertexAttribArray(5);
 		// SHININESS
 		glEnableVertexAttribArray(6);
-
+		GL13.glActiveTexture(GL13.GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, this.getTexture().getTextureID());
 		shader.loadModelMatrix(this.getModelMatrix());
 

@@ -1,16 +1,18 @@
 package de.sebastiankings.renderengine.shaders;
 
-import org.joml.Matrix4f;
-import org.joml.Vector3f;
-import org.lwjgl.BufferUtils;
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL20.*;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.FloatBuffer;
 
-import static org.lwjgl.opengl.GL11.GL_FALSE;
-import static org.lwjgl.opengl.GL20.*;
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
+import org.lwjgl.BufferUtils;
+import org.lwjgl.opengl.GL20;
+import org.lwjgl.opengl.GL30;
 
 public abstract class ShaderProgram {
 	
@@ -27,7 +29,8 @@ public abstract class ShaderProgram {
 		glAttachShader(programID, vertexShaderID);
 		glAttachShader(programID, fragmentShaderID);
 		bindAttributes();
-		glLinkProgram(programID);
+		setFragDataLocations();
+		GL20.glLinkProgram(programID);
 		glValidateProgram(programID);
 		getAllUniformLocations();
 	}
@@ -68,7 +71,13 @@ public abstract class ShaderProgram {
 		glUniform1f(location, f);
 	}
 	
+	protected abstract void setFragDataLocations();
+
+	protected void setFragDataLocation(int colorAttachement, String outputName){
+		GL30.glBindFragDataLocation(programID, colorAttachement, outputName);
+	}
 	protected abstract void bindAttributes();
+	
 	
 	protected void bindAttribute(int attribute, String variableName){
 		glBindAttribLocation(programID, attribute, variableName);

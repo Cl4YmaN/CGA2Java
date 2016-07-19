@@ -50,10 +50,10 @@ public class EntityShaderProgram extends ShaderProgram {
         location_viewMatrix = super.getUniformLocation("viewMatrix");
         location_projectionMatrix = super.getUniformLocation("projectionMatrix");
 
-		location_lightPos = super.getUniformLocation("lightPos");
-		location_lightColAmbient = super.getUniformLocation("lightColAmbient");
-		location_lightColDiffuse = super.getUniformLocation("lightColDiffuse");
-		location_lightColSpecular = super.getUniformLocation("lightColSpecular");
+		location_lightPos = super.getUniformLocation("lightPosition");
+		location_lightColAmbient = super.getUniformLocation("lightAmbient");
+		location_lightColDiffuse = super.getUniformLocation("lightDiffuse");
+		location_lightColSpecular = super.getUniformLocation("lightSpecular");
 
 		location_matEmission = super.getUniformLocation("matEmission");
 		location_matAmbient = super.getUniformLocation("matAmbient");
@@ -91,6 +91,15 @@ public class EntityShaderProgram extends ShaderProgram {
 	
 	public void loadProjectionMatrix(Matrix4f projection){
 		super.loadMatrix(location_projectionMatrix, projection);
+	}
+
+	@Override
+	protected void setFragDataLocations() {
+	setFragDataLocation(0, "colorDiffuse");
+	setFragDataLocation(1, "positionWorld");
+	setFragDataLocation(2, "normalWorld");
+	setFragDataLocation(3, "textureCoordst");
+		
 	}
 
 }

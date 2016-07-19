@@ -67,4 +67,10 @@ public class TerrainShaderProgramm extends ShaderProgram {
 		super.loadMatrix(location_projectionMatrix, projection);
 	}
 
+	@Override
+	protected void setFragDataLocations() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

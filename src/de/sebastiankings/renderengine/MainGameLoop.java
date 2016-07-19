@@ -36,6 +36,7 @@ import de.sebastiankings.renderengine.entities.Camera;
 import de.sebastiankings.renderengine.entities.Entity;
 import de.sebastiankings.renderengine.entities.EntityFactory;
 import de.sebastiankings.renderengine.entities.EntityType;
+import de.sebastiankings.renderengine.entities.Material;
 import de.sebastiankings.renderengine.entities.PointLight;
 import de.sebastiankings.renderengine.framebuffer.FrameBufferObject;
 import de.sebastiankings.renderengine.renderer.EntityRenderer;
@@ -68,13 +69,13 @@ public class MainGameLoop {
 			entities.add(cube);
 			for (int i = 1; i < 5; i++) {
 				Entity gumba = EntityFactory.createEntity(EntityType.GUMBA);
-				gumba.moveEntityGlobal(new Vector3f(4.0f * i, 0.0f * i, 4.0f * i));
+				gumba.moveEntityGlobal(new Vector3f(4.0f * i, -1.0f * i, 4.0f * i));
 				gumba.rotateY(30 * i);
 				entities.add(gumba);
 			}
 			List<PointLight> lights = new ArrayList<PointLight>();
-			lights.add(new PointLight(new Vector3f(100.0f), new Vector3f(1.0f), new Vector3f(1.0f), new Vector3f(1.0f)));
-
+			lights.add(new PointLight(new Vector3f(50.0f,50.0f,50.0f), new Vector3f(1.0f), new Vector3f(1.0f), new Vector3f(1.0f)));
+			Material m = new Material(new Vector3f(0.2f), new Vector3f(0.2f), new Vector3f(0.2f), 50.0f);
 			Inputs inputs = new Inputs();
 			inputs.registerInputs(windowId);
 			szene = new Szene(entities, lights, new Camera(), inputs);
@@ -82,7 +83,7 @@ public class MainGameLoop {
 			PassthroughRenderer passthrough = new PassthroughRenderer();
 			initShaderProgramms();
 			//INIT FBO
-			FrameBufferObject fbo = new FrameBufferObject(600,800);			
+			FrameBufferObject fbo = new FrameBufferObject(DisplayManager.getWidth(),DisplayManager.getHeight());			
 			LOGGER.info("Start GameLoop");
 			long lastStartTime = System.currentTimeMillis() - 10;
 			
@@ -98,11 +99,10 @@ public class MainGameLoop {
 				szene.getCamera().updateViewMatrix();
 				fbo.bind();
 				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-				System.out.println(fbo.toString());
 				entityRenderer.render();
 				fbo.unbind(1920, 1080);
 				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-				passthrough.render(szene,fbo);
+				passthrough.render(szene,m,fbo);
 
 				DisplayManager.updateDisplay();
 			}
@@ -166,13 +166,6 @@ public class MainGameLoop {
 		}
 		if (inputs.keyPressed(GLFW_KEY_SPACE)) {
 		}
-	}
-
-	private static void render(long deltaTime) {
-
-		
-		
-		
 	}
 
 	private static void loadOpenGlSettings() {
