@@ -19,8 +19,6 @@ public class Szene {
 	private EntityShaderProgram entityShader;
 	private PassthroughShaderProgram passthrough;
 
-	
-
 	public Szene(List<Entity> entities, List<PointLight> lights, Camera camera, Inputs inputs) {
 		this.setEntities(entities);
 		this.setLights(lights);
@@ -67,6 +65,7 @@ public class Szene {
 	public void setEntities(List<Entity> entities) {
 		this.entities = entities;
 	}
+
 	public PassthroughShaderProgram getPassthrough() {
 		return passthrough;
 	}
@@ -74,4 +73,5 @@ public class Szene {
 	public void setPassthrough(PassthroughShaderProgram passthrough) {
 		this.passthrough = passthrough;
 	}
+
 }

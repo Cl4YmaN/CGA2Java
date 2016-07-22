@@ -60,9 +60,8 @@ public class EntityFactory {
 			LOGGER.debug("Texture loaded");
 		}
 		//TEST_DIMENSIONS
-		EntityDimensions defaultDimensions = new EntityDimensions(10, 10, 10);
-		result = new Entity(type, model, defaultDimensions);
-		result.setTexture(texture);
+		result = new Entity(type, model);
+		result.setPrimaryTexture(texture);
 		LOGGER.debug("New entity created");
 		addEntityToCache(result);
 		return result;

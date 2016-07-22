@@ -1,24 +1,7 @@
 package de.sebastiankings.renderengine;
 
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_A;
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_D;
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_ESCAPE;
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_S;
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_SPACE;
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_W;
-import static org.lwjgl.glfw.GLFW.glfwSetWindowShouldClose;
-import static org.lwjgl.glfw.GLFW.glfwWindowShouldClose;
-import static org.lwjgl.opengl.GL11.GL_BACK;
-import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
-import static org.lwjgl.opengl.GL11.GL_CULL_FACE;
-import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
-import static org.lwjgl.opengl.GL11.GL_DEPTH_TEST;
-import static org.lwjgl.opengl.GL11.GL_FALSE;
-import static org.lwjgl.opengl.GL11.GL_TRUE;
-import static org.lwjgl.opengl.GL11.glClear;
-import static org.lwjgl.opengl.GL11.glClearColor;
-import static org.lwjgl.opengl.GL11.glCullFace;
-import static org.lwjgl.opengl.GL11.glEnable;
+import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.opengl.GL11.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,8 +26,7 @@ import de.sebastiankings.renderengine.renderer.EntityRenderer;
 import de.sebastiankings.renderengine.renderer.PassthroughRenderer;
 import de.sebastiankings.renderengine.shaders.EntityShaderProgram;
 import de.sebastiankings.renderengine.shaders.PassthroughShaderProgram;
-import de.sebastiankings.renderengine.texture.Texture;
-import de.sebastiankings.renderengine.utils.LoaderUtils;
+import de.sebastiankings.renderengine.utils.TerrainUtils;
 
 public class MainGameLoop {
 	private static final Logger LOGGER = Logger.getLogger(MainGameLoop.class);
@@ -65,14 +47,15 @@ public class MainGameLoop {
 
 			// Create Szene
 			List<Entity> entities = new ArrayList<Entity>();
-			Entity cube = EntityFactory.createEntity(EntityType.FLOOR);
-			entities.add(cube);
-			for (int i = 1; i < 5; i++) {
-				Entity gumba = EntityFactory.createEntity(EntityType.GUMBA);
-				gumba.moveEntityGlobal(new Vector3f(4.0f * i, -1.0f * i, 4.0f * i));
-				gumba.rotateY(30 * i);
-				entities.add(gumba);
-			}
+			Entity gumba = EntityFactory.createEntity(EntityType.CHAR_GUMBA_OLD);
+			entities.add(gumba);
+			entities.add(TerrainUtils.generateTerrain(200, 100));
+//			for (int i = 1; i < 5; i++) {
+//				Entity gumba = EntityFactory.createEntity(EntityType.CHAR_MARIO);
+//				gumba.moveEntityGlobal(new Vector3f(4.0f * i, -1.0f * i, 4.0f * i));
+//				gumba.rotateY(30 * i);
+//				entities.add(gumba);
+//			}
 			List<PointLight> lights = new ArrayList<PointLight>();
 			lights.add(new PointLight(new Vector3f(50.0f,50.0f,50.0f), new Vector3f(1.0f), new Vector3f(1.0f), new Vector3f(1.0f)));
 			Material m = new Material(new Vector3f(0.2f), new Vector3f(0.2f), new Vector3f(0.2f), 50.0f);
@@ -82,8 +65,10 @@ public class MainGameLoop {
 			EntityRenderer entityRenderer = new EntityRenderer(szene);
 			PassthroughRenderer passthrough = new PassthroughRenderer();
 			initShaderProgramms();
+//			Terrain t = TerrainUtils.generateTerrain(500, 500);
 			//INIT FBO
-			FrameBufferObject fbo = new FrameBufferObject(DisplayManager.getWidth(),DisplayManager.getHeight());			
+			FrameBufferObject fbo = new FrameBufferObject(DisplayManager.getWidth(),DisplayManager.getHeight());
+			
 			LOGGER.info("Start GameLoop");
 			long lastStartTime = System.currentTimeMillis() - 10;
 			

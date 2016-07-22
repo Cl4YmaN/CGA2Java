@@ -13,15 +13,13 @@ public abstract class BaseEntity {
 	protected Model model;
 	protected Matrix4f modelMatrix = new Matrix4f();
 	protected EntityState entityState = new EntityState();
-	protected EntityDimensions dimensions;
 	protected boolean showEntity;
 
-	public BaseEntity(EntityType type, Model model, Matrix4f modelMatrix, EntityDimensions dimensions) {
+	public BaseEntity(EntityType type, Model model, Matrix4f modelMatrix) {
 		this.type = type;
 		this.model = model;
 		this.modelMatrix = modelMatrix;
 		this.showEntity = true;
-		this.dimensions = dimensions;
 
 	}
 
@@ -61,9 +59,6 @@ public abstract class BaseEntity {
 		this.showEntity = show;
 	}
 
-	public EntityDimensions getDimensions() {
-		return dimensions;
-	}
 
 	abstract public void render(EntityShaderProgram shader, Camera camera, PointLight light);
 

@@ -2,25 +2,26 @@ package de.sebastiankings.renderengine.entities;
 
 public enum EntityType {
 
-	TRASHBIN("res/meshes/trashbin/", new EntityDimensions(10, 10, 10)), GUMBA("res/meshes/gumba/", new EntityDimensions(10, 10, 10)), LASER("res/meshes/laser/", new EntityDimensions(10, 10, 10)), SHIP("res/meshes/ship/", new EntityDimensions(10, 10, 10)), ENEMY("res/meshes/enemy/", new EntityDimensions(10, 10, 10)), FLOOR("res/meshes/floor/", new EntityDimensions(10, 10, 10));
-
+	BLOCK_BRICK("res/meshes/block_brick/"),
+	BLOCK_QUESTION("res/meshes/block_question/"),
+	BLOCK_WALL("res/meshes/block_wall/"),
+	CHAR_GUMBA("res/meshes/char_gumba/"),
+	CHAR_MARIO("res/meshes/char_mario/"),
+	ITEM_MUSHROOM("res/meshes/item_mushroom/"),
+	MOUNTAIN("res/meshes/mountain/"),
+	CHAR_GUMBA_OLD("res/meshes/gumba/");
 	/**
 	 * Path to DataFolder
 	 */
 	private String folderName;
-	private EntityDimensions dimensions;
 
-	EntityType(String folderName, EntityDimensions dimensions) {
+	EntityType(String folderName) {
 		this.folderName = folderName;
-		this.dimensions = dimensions;
 	}
 
 	public String getFolderPath() {
 		return folderName;
 	}
 
-	public EntityDimensions getDimensions() {
-		return dimensions;
-	}
 
 }
