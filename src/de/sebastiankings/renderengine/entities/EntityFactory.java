@@ -61,6 +61,7 @@ public class EntityFactory {
 		}
 		//TEST_DIMENSIONS
 		result = new Entity(type, model);
+		result.setUseMultitexture(false);
 		result.setPrimaryTexture(texture);
 		LOGGER.debug("New entity created");
 		addEntityToCache(result);

@@ -47,8 +47,12 @@ public class MainGameLoop {
 
 			// Create Szene
 			List<Entity> entities = new ArrayList<Entity>();
-			Entity gumba = EntityFactory.createEntity(EntityType.CHAR_GUMBA_OLD);
+			Entity gumba = EntityFactory.createEntity(EntityType.CHAR_GUMBA);
+//			gumba.scale(0.01f);
+			gumba.moveEntityGlobal(new Vector3f(4.0f));
 			entities.add(gumba);
+			entities.add(EntityFactory.createEntity(EntityType.CHAR_GUMBA_OLD));
+			
 			entities.add(TerrainUtils.generateTerrain(200, 100));
 //			for (int i = 1; i < 5; i++) {
 //				Entity gumba = EntityFactory.createEntity(EntityType.CHAR_MARIO);

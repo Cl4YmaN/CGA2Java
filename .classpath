@@ -7,7 +7,7 @@
 	<classpathentry kind="lib" path="libs/log4j/log4j-1.2.17.jar"/>
 	<classpathentry kind="lib" path="libs/LWJGL/jar/lwjgl.jar">
 		<attributes>
-			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="RenderEngine/libs/LWJGL/native"/>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="CGA2Java/libs/LWJGL/native"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="libs/PNGDecoder/PNGDecoder.jar"/>
