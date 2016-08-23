@@ -6,6 +6,7 @@ import de.sebastiankings.renderengine.entities.Camera;
 import de.sebastiankings.renderengine.entities.Entity;
 import de.sebastiankings.renderengine.entities.PointLight;
 import de.sebastiankings.renderengine.shaders.BlurShaderProgram;
+import de.sebastiankings.renderengine.shaders.CombineShaderProgram;
 import de.sebastiankings.renderengine.shaders.EntityShaderProgram;
 import de.sebastiankings.renderengine.shaders.PassthroughShaderProgram;
 
@@ -20,6 +21,7 @@ public class Szene {
 	private EntityShaderProgram entityShader;
 	private PassthroughShaderProgram passthrough;
 	private BlurShaderProgram blurShader;
+	private CombineShaderProgram combineShader;
 
 	public void setBlurShader(BlurShaderProgram blurShader) {
 		this.blurShader = blurShader;
@@ -82,6 +84,14 @@ public class Szene {
 
 	public BlurShaderProgram getBlurShader() {
 		return this.blurShader;
+	}
+
+	public CombineShaderProgram getCombineShader() {
+		return combineShader;
+	}
+
+	public void setCombineShader(CombineShaderProgram combineShader) {
+		this.combineShader = combineShader;
 	}
 
 }

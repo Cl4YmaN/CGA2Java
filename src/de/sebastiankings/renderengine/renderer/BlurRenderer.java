@@ -7,6 +7,7 @@ import org.lwjgl.opengl.GL30;
 
 import de.sebastiankings.renderengine.bo.Szene;
 import de.sebastiankings.renderengine.entities.Model;
+import de.sebastiankings.renderengine.framebuffer.AbsctractFrameBufferObject;
 import de.sebastiankings.renderengine.framebuffer.BlurFrameBufferObject;
 import de.sebastiankings.renderengine.shaders.BlurShaderProgram;
 import de.sebastiankings.renderengine.utils.LoaderUtils;
@@ -16,7 +17,13 @@ public class BlurRenderer {
 	private final float[] QUADPOSITIONS = { -1, 1, -1, -1, 1, 1, 1, -1 };
 	private final Model QUAD = LoaderUtils.loadToVao(QUADPOSITIONS);
 	
-	public void render(Szene szene, boolean blurDirection,BlurFrameBufferObject previousFBO){
+	
+	public void render(Szene szene, boolean blurDirection,AbsctractFrameBufferObject previousFBO, int textureId){
+		render(szene,blurDirection,previousFBO,textureId,0);
+	}
+	
+	
+	public void render(Szene szene, boolean blurDirection,AbsctractFrameBufferObject previousFBO, int textureId, float renderTarget){
 		BlurShaderProgram blurShader = szene.getBlurShader();
 		blurShader.start();
 		blurShader.setBlurDirection(blurDirection);
@@ -26,7 +33,7 @@ public class BlurRenderer {
 		GL20.glEnableVertexAttribArray(0);
 		//Activate FrameDataTexture
 		GL13.glActiveTexture(GL13.GL_TEXTURE0);
-		GL11.glBindTexture(GL11.GL_TEXTURE_2D, previousFBO.getFrameDataTexture());
+		GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureId);
 		
 		//DRAWCALL
 		GL11.glDrawArrays(GL11.GL_TRIANGLE_STRIP, 0, QUAD.getVertexCount());

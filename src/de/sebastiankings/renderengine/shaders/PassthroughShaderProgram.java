@@ -1,14 +1,16 @@
 package de.sebastiankings.renderengine.shaders;
 
-import static org.lwjgl.opengl.GL20.glUniform1i;
+import static org.lwjgl.opengl.GL20.*;
 
+import org.apache.log4j.Logger;
 import org.joml.Matrix4f;
 
 import de.sebastiankings.renderengine.entities.Material;
 import de.sebastiankings.renderengine.entities.PointLight;
 
 public class PassthroughShaderProgram extends ShaderProgram {
-
+	private static final Logger LOGGER = Logger.getLogger(PassthroughShaderProgram.class);
+	
 	private int location_transformationMatrix;
 	private int location_viewMatrix;
 
@@ -27,8 +29,37 @@ public class PassthroughShaderProgram extends ShaderProgram {
 	private int location_light_specular;
 	private int location_light_diffuse;
 
+	private int location_limitBlurStrongFront;
+	private int location_limitBlurSoftFront;
+	private int location_limitFocalPlane;
+	private int location_limitBlurSoftBack;
+	private int location_limitBlurStrongBack;
+
 	public PassthroughShaderProgram(String vertexPath, String fragmentPath) {
 		super(vertexPath, fragmentPath);
+	}
+
+	public void loadSliceLimits() {
+		float near = 0.5f;
+		float far = 2000.0f;
+		float min = 1 / (near + far);
+		float max = 1 / (near + far) - (far - near);
+		float range = 1 - min;
+		float tenPercent = range / 10;
+		
+		loadFloat(location_limitBlurStrongFront,tenPercent * 0.05f);
+		loadFloat(location_limitBlurSoftFront,tenPercent * 0.1f);
+		loadFloat(location_limitFocalPlane,tenPercent * 0.2f);
+		loadFloat(location_limitBlurSoftBack,tenPercent * 0.21f);
+		loadFloat(location_limitBlurStrongBack,tenPercent * 10);
+		
+//		LOGGER.debug(tenPercent * 1);
+//		LOGGER.debug(tenPercent * 2);
+//		LOGGER.debug(tenPercent * 6);
+//		LOGGER.debug(tenPercent * 9);
+//		LOGGER.debug(tenPercent * 10);
+		
+
 	}
 
 	public void loadTransformation(Matrix4f matrix) {
@@ -39,7 +70,6 @@ public class PassthroughShaderProgram extends ShaderProgram {
 	protected void getAllUniformLocations() {
 		location_transformationMatrix = super.getUniformLocation("transformationMatrix");
 		location_viewMatrix = super.getUniformLocation("viewMatrix");
-		
 
 		location_diffuseTexture = super.getUniformLocation("diffuseTexture");
 		location_positionTexture = super.getUniformLocation("positionTexture");
@@ -55,6 +85,12 @@ public class PassthroughShaderProgram extends ShaderProgram {
 		location_light_ambient = super.getUniformLocation("lightAmbient");
 		location_light_specular = super.getUniformLocation("lightSpecular");
 		location_light_diffuse = super.getUniformLocation("lightDiffuse");
+
+		location_limitBlurStrongFront = super.getUniformLocation("limitBlurStrongFront");
+		location_limitBlurSoftFront = super.getUniformLocation("limitBlurSoftFront");
+		location_limitFocalPlane = super.getUniformLocation("limitFocalPlane");
+		location_limitBlurSoftBack = super.getUniformLocation("limitBlurSoftBack");
+		location_limitBlurStrongBack = super.getUniformLocation("limitBlurStrongBack");
 	}
 
 	@Override
@@ -84,11 +120,17 @@ public class PassthroughShaderProgram extends ShaderProgram {
 		super.loadVector(location_light_diffuse, light.getLightColSpecular());
 	}
 
-	public void loadViewMatrix (Matrix4f view){
-        super.loadMatrix(location_viewMatrix, view);
-    }
+	public void loadViewMatrix(Matrix4f view) {
+		super.loadMatrix(location_viewMatrix, view);
+	}
+
 	@Override
 	protected void setFragDataLocations() {
+		setFragDataLocation(0, "blurStrongFront");
+		setFragDataLocation(1, "blurSoftFront");
+		setFragDataLocation(2, "focalPlane");
+		setFragDataLocation(3, "blurSoftBack");
+		setFragDataLocation(4, "blurStrongBack");
 
 	}
 }

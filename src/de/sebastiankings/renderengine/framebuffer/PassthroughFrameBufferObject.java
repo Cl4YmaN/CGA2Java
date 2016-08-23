@@ -14,7 +14,7 @@ public class PassthroughFrameBufferObject extends AbsctractFrameBufferObject {
 	private int depthBuffer;
 	
 	public PassthroughFrameBufferObject(int width, int height) {
-		super(width, height);
+		super(width, height, 4);
 		diffuseTexture = createTextureAttachment(width, height, GL30.GL_COLOR_ATTACHMENT0);
 		positionTexture = createTextureAttachment(width, height, GL30.GL_COLOR_ATTACHMENT1);
 		normalTexture = createTextureAttachment(width, height, GL30.GL_COLOR_ATTACHMENT2);

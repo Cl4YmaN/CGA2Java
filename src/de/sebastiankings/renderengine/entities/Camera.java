@@ -31,7 +31,7 @@ public class Camera {
 	}
 
 	public void loadDefaultCamSettings(Vector3f playerPosition) {
-		this.projectionMatrix = createProjectionMatrix(1.0f, 2000.0f);
+		this.projectionMatrix = createProjectionMatrix(.5f, 2000.0f);
 		this.camPos = new Vector3f(10, 10, 10);
 		this.lookDir = new Vector3f(0, -1, 0);
 		this.theta = (float) Math.PI * 0.3f;

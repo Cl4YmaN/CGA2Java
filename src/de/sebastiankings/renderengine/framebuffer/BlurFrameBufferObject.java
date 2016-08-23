@@ -8,7 +8,7 @@ public class BlurFrameBufferObject extends AbsctractFrameBufferObject{
 	private int frameDataTexture;
 	
 	public BlurFrameBufferObject(int width, int height) {
-		super(width, height);
+		super(width, height,1);
 		setFrameDataTexture(createTextureAttachment(width, height, GL30.GL_COLOR_ATTACHMENT0));
 	}
 

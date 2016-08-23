@@ -1,5 +1,7 @@
 package de.sebastiankings.renderengine.framebuffer;
 
+import static org.lwjgl.opengl.GL11.*;
+
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
@@ -18,21 +20,19 @@ public abstract class AbsctractFrameBufferObject {
 	private int id;
 	
 
-	public AbsctractFrameBufferObject(int width, int height) {
-		id = createFrameBuffer();
+	public AbsctractFrameBufferObject(int width, int height, int colorAttachmentCount) {
+		id = createFrameBuffer(colorAttachmentCount);
 		this.width = width;
 		this.height = height;
 	}
 
-	private int createFrameBuffer() {
+	private int createFrameBuffer(int colorAttachmentCount) {
 		int frameBuffer = GL30.glGenFramebuffers();
 		GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, frameBuffer);
-		GL11.glDrawBuffer(GL30.GL_COLOR_ATTACHMENT0);
-		IntBuffer drawBuffers = BufferUtils.createIntBuffer(4);
-		drawBuffers.put(GL30.GL_COLOR_ATTACHMENT0);
-		drawBuffers.put(GL30.GL_COLOR_ATTACHMENT1);
-		drawBuffers.put(GL30.GL_COLOR_ATTACHMENT2);
-		drawBuffers.put(GL30.GL_COLOR_ATTACHMENT3);
+		IntBuffer drawBuffers = BufferUtils.createIntBuffer(colorAttachmentCount);
+		for (int i = 0; i < colorAttachmentCount; i++) {
+			drawBuffers.put(GL30.GL_COLOR_ATTACHMENT0 + i);
+		}		
 		drawBuffers.flip();
 		GL20.glDrawBuffers(drawBuffers);
 		return frameBuffer;
@@ -42,6 +42,7 @@ public abstract class AbsctractFrameBufferObject {
 		GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
 		GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, id);
 		GL11.glViewport(0, 0, width, height);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	}
 
 	public void unbind(int resetWidth, int resetHeight) {
