@@ -14,7 +14,7 @@ public class BlurShaderProgram extends ShaderProgram {
 	}
 
 	public void setBlurDirection(boolean blurDirection){
-		super.loadFloat(location_blurDirection, blurDirection ? 1.0f : 0f);
+		super.loadFloat(location_blurDirection, blurDirection ? 1.0f : 0.0f);
 	}
 	
 	public void setTargetResolution(float targetResolution){
@@ -45,6 +45,11 @@ public class BlurShaderProgram extends ShaderProgram {
 	
 	@Override
 	protected void setFragDataLocations() {
+		setFragDataLocation(0, "blurStrongFront");
+		setFragDataLocation(1, "blurSoftFront");
+		setFragDataLocation(2, "focalPlane");
+		setFragDataLocation(3, "blurSoftBack");
+		setFragDataLocation(4, "blurStrongBack");
 
 	}
 }

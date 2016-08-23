@@ -39,10 +39,16 @@ public abstract class AbsctractFrameBufferObject {
 	}
 
 	public void bind() {
+		bind(true);
+	}
+	
+	public void bind(boolean clearBufferOnBind) {
 		GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
 		GL30.glBindFramebuffer(GL30.GL_FRAMEBUFFER, id);
 		GL11.glViewport(0, 0, width, height);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		if(clearBufferOnBind){
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		}
 	}
 
 	public void unbind(int resetWidth, int resetHeight) {

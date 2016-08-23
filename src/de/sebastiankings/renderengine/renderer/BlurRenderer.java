@@ -26,8 +26,9 @@ public class BlurRenderer {
 	public void render(Szene szene, boolean blurDirection,AbsctractFrameBufferObject previousFBO, int textureId, float renderTarget){
 		BlurShaderProgram blurShader = szene.getBlurShader();
 		blurShader.start();
-		blurShader.setBlurDirection(blurDirection);
+		//blurShader.setBlurDirection(blurDirection);
 		blurShader.setTargetResolution(blurDirection ? previousFBO.getWidth() : previousFBO.getHeight());
+		blurShader.setRenderTarget(renderTarget);
 		
 		GL30.glBindVertexArray(QUAD.getVaoID());
 		GL20.glEnableVertexAttribArray(0);

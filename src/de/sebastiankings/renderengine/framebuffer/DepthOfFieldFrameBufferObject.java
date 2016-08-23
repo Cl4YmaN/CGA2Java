@@ -5,37 +5,18 @@ import org.lwjgl.opengl.GL30;
 
 public class DepthOfFieldFrameBufferObject extends AbsctractFrameBufferObject {
 
-	private int blurStrongfront;
-	private int blurSoftFront;
+	private int blurStrong;
+	private int blurSoft;
 	private int focalPlane;
-	private int blurSoftBack;
-	private int blurStrongBack;
 
 	public DepthOfFieldFrameBufferObject(int width, int height) {
 		super(width, height,5);
-		blurStrongfront = createTextureAttachment(width, height, GL30.GL_COLOR_ATTACHMENT0);
-		blurSoftFront = createTextureAttachment(width, height, GL30.GL_COLOR_ATTACHMENT1);
+		blurStrong = createTextureAttachment(width, height, GL30.GL_COLOR_ATTACHMENT0);
+		blurSoft = createTextureAttachment(width, height, GL30.GL_COLOR_ATTACHMENT1);
 		focalPlane = createTextureAttachment(width, height, GL30.GL_COLOR_ATTACHMENT2);
-		blurSoftBack = createTextureAttachment(width, height, GL30.GL_COLOR_ATTACHMENT3);
-		blurStrongBack = createTextureAttachment(width, height, GL30.GL_COLOR_ATTACHMENT4);
 	}
 
-	public int getBlurStrongFront() {
-		return blurStrongfront;
-	}
-
-	public void setBlurStrongFront(int blurStrongFront) {
-		this.blurStrongfront = blurStrongFront;
-	}
-
-	public int getBlurSoftFront() {
-		return blurSoftFront;
-	}
-
-	public void setBlurSoftFront(int blurSoftFront) {
-		this.blurSoftFront = blurSoftFront;
-	}
-
+	
 	public int getFocalPlane() {
 		return focalPlane;
 	}
@@ -44,28 +25,32 @@ public class DepthOfFieldFrameBufferObject extends AbsctractFrameBufferObject {
 		this.focalPlane = focalPlane;
 	}
 
-	public int getBlurSoftBack() {
-		return blurSoftBack;
+	
+
+	public int getBlurStrong() {
+		return blurStrong;
 	}
 
-	public void setBlurSoftBack(int blurSoftBack) {
-		this.blurSoftBack = blurSoftBack;
+
+	public void setBlurStrong(int blurStrong) {
+		this.blurStrong = blurStrong;
 	}
 
-	public int getBlurStrongBack() {
-		return blurStrongBack;
+
+	public int getBlurSoft() {
+		return blurSoft;
 	}
 
-	public void setBlurStrongBack(int blurHardBack) {
-		this.blurStrongBack = blurHardBack;
+
+	public void setBlurSoft(int blurSoft) {
+		this.blurSoft = blurSoft;
 	}
+
 
 	@Override
 	public void spezificCleanUp() {
-		GL11.glDeleteTextures(blurStrongfront);
-		GL11.glDeleteTextures(blurSoftFront);
+		GL11.glDeleteTextures(blurStrong);
+		GL11.glDeleteTextures(blurSoft);
 		GL11.glDeleteTextures(focalPlane);
-		GL11.glDeleteTextures(blurSoftBack);
-		GL11.glDeleteTextures(blurStrongBack);
 	}
 }

@@ -47,10 +47,10 @@ public class PassthroughShaderProgram extends ShaderProgram {
 		float range = 1 - min;
 		float tenPercent = range / 10;
 		
-		loadFloat(location_limitBlurStrongFront,tenPercent * 0.05f);
+		loadFloat(location_limitBlurStrongFront,tenPercent * 0.02f);
 		loadFloat(location_limitBlurSoftFront,tenPercent * 0.1f);
-		loadFloat(location_limitFocalPlane,tenPercent * 0.2f);
-		loadFloat(location_limitBlurSoftBack,tenPercent * 0.21f);
+		loadFloat(location_limitFocalPlane,tenPercent * 0.6f);
+		loadFloat(location_limitBlurSoftBack,tenPercent * 0.9f);
 		loadFloat(location_limitBlurStrongBack,tenPercent * 10);
 		
 //		LOGGER.debug(tenPercent * 1);
@@ -126,11 +126,10 @@ public class PassthroughShaderProgram extends ShaderProgram {
 
 	@Override
 	protected void setFragDataLocations() {
-		setFragDataLocation(0, "blurStrongFront");
-		setFragDataLocation(1, "blurSoftFront");
+		setFragDataLocation(0, "blurStrong");
+		setFragDataLocation(1, "blurSoft");
 		setFragDataLocation(2, "focalPlane");
-		setFragDataLocation(3, "blurSoftBack");
-		setFragDataLocation(4, "blurStrongBack");
+		
 
 	}
 }

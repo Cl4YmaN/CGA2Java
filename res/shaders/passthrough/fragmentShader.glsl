@@ -2,11 +2,9 @@
 
 in vec2 textureCoords;
 
-out vec4 blurStrongFront;
-out vec4 blurSoftFront;
+out vec4 blurStrong;
+out vec4 blurSoft;
 out vec4 focalPlane;
-out vec4 blurSoftBack;
-out vec4 blurStrongBack;
 
 uniform sampler2D diffuseTexture;
 uniform sampler2D positionTexture;
@@ -69,40 +67,16 @@ void main(void){
     float depth = texture(depthTexture,textureCoords).x;
     float linearDepth = (2.0 * zNear) / (zFar + zNear - depth * (zFar - zNear)); 
     
-	//StrongFront
-	if(linearDepth <= limitBlurStrongFront){
-			blurStrongFront = temp;
-			blurSoftFront = vec4(0.0,0.0,0.0,0.0);
-			focalPlane = vec4(0.0,0.0,0.0,0.0);
-			blurSoftBack = vec4(0.0,0.0,0.0,0.0);
-			blurStrongBack = vec4(0.0,0.0,0.0,0.0);
+	//GET BLENDMASKS FOR BLURED IMAGES
+	if(linearDepth <= limitBlurStrongFront || linearDepth > limitBlurSoftBack){
+			blurStrong = vec4(1.0);
+			blurSoft = vec4(0.0);
 	//SoftFront
-	} else if(linearDepth > limitBlurStrongFront && linearDepth <= limitBlurSoftFront ) {
-			blurStrongFront = vec4(0.0,0.0,0.0,0.0);
-			blurSoftFront = temp;
-			focalPlane = vec4(0.0,0.0,0.0,0.0);
-			blurSoftBack = vec4(0.0,0.0,0.0,0.0);
-			blurStrongBack = vec4(0.0,0.0,0.0,0.0);
-	//FocalPlane
-	} else if(linearDepth > limitBlurSoftFront && linearDepth <= limitFocalPlane ) {
-			blurStrongFront = vec4(0.0,0.0,0.0,0.0);
-			blurSoftFront = vec4(0.0,0.0,0.0,0.0);
-			focalPlane = temp;
-			blurSoftBack = vec4(0.0,0.0,0.0,0.0);
-			blurStrongBack = vec4(0.0,0.0,0.0,0.0);
-	// SoftBack
-	} else if(linearDepth > limitFocalPlane && linearDepth <= limitBlurSoftBack ) {
-			blurStrongFront = vec4(0.0,0.0,0.0,0.0);
-			blurSoftFront = vec4(0.0,0.0,0.0,0.0);
-			focalPlane = vec4(0.0,0.0,0.0,0.0);
-			blurSoftBack = temp;
-			blurStrongBack = vec4(0.0,0.0,0.0,0.0);
-	//StrongBack
-	} else if(linearDepth > limitBlurSoftBack) {
-			blurStrongFront = vec4(0.0,0.0,0.0,0.0);
-			blurSoftFront = vec4(0.0,0.0,0.0,0.0);
-			focalPlane = vec4(0.0,0.0,0.0,0.0);
-			blurSoftBack = vec4(0.0,0.0,0.0,0.0);
-			blurStrongBack = temp;
+	} else if((linearDepth > limitBlurStrongFront && linearDepth <= limitBlurSoftFront ) || (linearDepth > limitFocalPlane && linearDepth <= limitBlurSoftBack )) {
+			blurStrong = vec4(0.0);
+			blurSoft = vec4(1.0);
 	}
+	
+	focalPlane = temp;
+	
 }
