@@ -5,36 +5,23 @@ import java.nio.IntBuffer;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
 import org.lwjgl.opengl.GL14;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.opengl.GL32;
 
-public class FrameBufferObject {
+public abstract class AbsctractFrameBufferObject {
 
 	private int width;
 	private int height;
 
 	private int id;
-	private int diffuseTexture; // Difuse part
-	private int normalTexture;
-	private int positionTexture;
-	private int textureCoordTexture;
+	
 
-	private int depthTexture;
-	private int depthBuffer;
-
-	public FrameBufferObject(int width, int height) {
+	public AbsctractFrameBufferObject(int width, int height) {
 		id = createFrameBuffer();
 		this.width = width;
 		this.height = height;
-		diffuseTexture = createTextureAttachment(width, height, GL30.GL_COLOR_ATTACHMENT0);
-		positionTexture = createTextureAttachment(width, height, GL30.GL_COLOR_ATTACHMENT1);
-		normalTexture = createTextureAttachment(width, height, GL30.GL_COLOR_ATTACHMENT2);
-		textureCoordTexture = createTextureAttachment(width, height, GL30.GL_COLOR_ATTACHMENT3);
-		depthBuffer = createDepthBufferAttachment(width, height);
-		depthTexture = createDepthTextureAttachment(width, height);
 	}
 
 	private int createFrameBuffer() {
@@ -102,43 +89,17 @@ public class FrameBufferObject {
 		return id;
 	}
 
-	public int getDiffuseTexture() {
-		return diffuseTexture;
-	}
-
-	public int getDepthTexture() {
-		return depthTexture;
-	}
-
-	public int getNormalTexture() {
-		return normalTexture;
-	}
-
-	public int getPositionTexture() {
-		return positionTexture;
-	}
-
-	public int getTextureCoordTexture() {
-		return textureCoordTexture;
-	}
-
-	public int getDepthBuffer() {
-		return depthBuffer;
-	}
+	public abstract void spezificCleanUp();
 
 	public void cleanUp() {// call when closing the game
 		GL30.glDeleteFramebuffers(id);
-		GL11.glDeleteTextures(diffuseTexture);
-		GL11.glDeleteTextures(positionTexture);
-		GL11.glDeleteTextures(normalTexture);
-		GL11.glDeleteTextures(textureCoordTexture);
-		GL11.glDeleteTextures(depthTexture);
-		GL30.glDeleteRenderbuffers(depthBuffer);
+		spezificCleanUp();
 	}
 
 	@Override
 	public String toString() {
-		return "FrameBufferObject [width=" + width + ", height=" + height + ", id=" + id + ", textureId=" + diffuseTexture + ", depthTextureId=" + depthTexture + ", depthBufferId=" + depthBuffer + "]";
+		return "FrameBufferObject [width=" + width + ", height=" + height + ", id=" + id + "]";
 	}
+
 
 }

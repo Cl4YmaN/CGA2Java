@@ -5,6 +5,7 @@ import java.util.List;
 import de.sebastiankings.renderengine.entities.Camera;
 import de.sebastiankings.renderengine.entities.Entity;
 import de.sebastiankings.renderengine.entities.PointLight;
+import de.sebastiankings.renderengine.shaders.BlurShaderProgram;
 import de.sebastiankings.renderengine.shaders.EntityShaderProgram;
 import de.sebastiankings.renderengine.shaders.PassthroughShaderProgram;
 
@@ -18,6 +19,11 @@ public class Szene {
 
 	private EntityShaderProgram entityShader;
 	private PassthroughShaderProgram passthrough;
+	private BlurShaderProgram blurShader;
+
+	public void setBlurShader(BlurShaderProgram blurShader) {
+		this.blurShader = blurShader;
+	}
 
 	public Szene(List<Entity> entities, List<PointLight> lights, Camera camera, Inputs inputs) {
 		this.setEntities(entities);
@@ -72,6 +78,10 @@ public class Szene {
 
 	public void setPassthrough(PassthroughShaderProgram passthrough) {
 		this.passthrough = passthrough;
+	}
+
+	public BlurShaderProgram getBlurShader() {
+		return this.blurShader;
 	}
 
 }

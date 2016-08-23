@@ -9,7 +9,8 @@ import org.lwjgl.opengl.GL30;
 import de.sebastiankings.renderengine.bo.Szene;
 import de.sebastiankings.renderengine.entities.Material;
 import de.sebastiankings.renderengine.entities.Model;
-import de.sebastiankings.renderengine.framebuffer.FrameBufferObject;
+import de.sebastiankings.renderengine.framebuffer.AbsctractFrameBufferObject;
+import de.sebastiankings.renderengine.framebuffer.PassthroughFrameBufferObject;
 import de.sebastiankings.renderengine.shaders.PassthroughShaderProgram;
 import de.sebastiankings.renderengine.utils.LoaderUtils;
 
@@ -22,7 +23,7 @@ public class PassthroughRenderer {
 		
 	}
 	
-	public void render(Szene szene, Material m,FrameBufferObject fbo){
+	public void render(Szene szene, Material m,PassthroughFrameBufferObject fbo){
 		PassthroughShaderProgram passthroughShader = szene.getPassthrough();
 		passthroughShader.start();
 		passthroughShader.loadTextures();

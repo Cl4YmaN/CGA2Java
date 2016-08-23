@@ -21,9 +21,12 @@ import de.sebastiankings.renderengine.entities.EntityFactory;
 import de.sebastiankings.renderengine.entities.EntityType;
 import de.sebastiankings.renderengine.entities.Material;
 import de.sebastiankings.renderengine.entities.PointLight;
-import de.sebastiankings.renderengine.framebuffer.FrameBufferObject;
+import de.sebastiankings.renderengine.framebuffer.BlurFrameBufferObject;
+import de.sebastiankings.renderengine.framebuffer.PassthroughFrameBufferObject;
+import de.sebastiankings.renderengine.renderer.BlurRenderer;
 import de.sebastiankings.renderengine.renderer.EntityRenderer;
 import de.sebastiankings.renderengine.renderer.PassthroughRenderer;
+import de.sebastiankings.renderengine.shaders.BlurShaderProgram;
 import de.sebastiankings.renderengine.shaders.EntityShaderProgram;
 import de.sebastiankings.renderengine.shaders.PassthroughShaderProgram;
 import de.sebastiankings.renderengine.utils.TerrainUtils;
@@ -47,12 +50,7 @@ public class MainGameLoop {
 
 			// Create Szene
 			List<Entity> entities = new ArrayList<Entity>();
-			Entity gumba = EntityFactory.createEntity(EntityType.CHAR_GUMBA);
-//			gumba.scale(0.01f);
-			gumba.moveEntityGlobal(new Vector3f(4.0f));
-			entities.add(gumba);
 			entities.add(EntityFactory.createEntity(EntityType.CHAR_GUMBA_OLD));
-			
 			entities.add(TerrainUtils.generateTerrain(200, 100));
 //			for (int i = 1; i < 5; i++) {
 //				Entity gumba = EntityFactory.createEntity(EntityType.CHAR_MARIO);
@@ -68,10 +66,13 @@ public class MainGameLoop {
 			szene = new Szene(entities, lights, new Camera(), inputs);
 			EntityRenderer entityRenderer = new EntityRenderer(szene);
 			PassthroughRenderer passthrough = new PassthroughRenderer();
+			BlurRenderer blurRenderer = new BlurRenderer();
 			initShaderProgramms();
 //			Terrain t = TerrainUtils.generateTerrain(500, 500);
 			//INIT FBO
-			FrameBufferObject fbo = new FrameBufferObject(DisplayManager.getWidth(),DisplayManager.getHeight());
+			PassthroughFrameBufferObject passthroughFbo = new PassthroughFrameBufferObject(DisplayManager.getWidth(),DisplayManager.getHeight());
+			BlurFrameBufferObject horizontalBlurFbo = new BlurFrameBufferObject(DisplayManager.getWidth() / 4,DisplayManager.getHeight()/ 4);
+			BlurFrameBufferObject verticalBlurFbo = new BlurFrameBufferObject(DisplayManager.getWidth()/ 4,DisplayManager.getHeight()/ 4);
 			
 			LOGGER.info("Start GameLoop");
 			long lastStartTime = System.currentTimeMillis() - 10;
@@ -86,12 +87,29 @@ public class MainGameLoop {
 				
 				
 				szene.getCamera().updateViewMatrix();
-				fbo.bind();
+				
+				//GEOMETRY PASS
+				passthroughFbo.bind();
 				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 				entityRenderer.render();
-				fbo.unbind(1920, 1080);
+				
+				//SHADING PASS
+				horizontalBlurFbo.bind();
 				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-				passthrough.render(szene,m,fbo);
+				passthrough.render(szene,m,passthroughFbo);
+				
+				//HORIZONTAL BLUR
+				verticalBlurFbo.bind();
+				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+				blurRenderer.render(szene, true, horizontalBlurFbo);
+//				
+//				//VERTICAL BLUR
+				verticalBlurFbo.unbind(DisplayManager.getWidth(), DisplayManager.getHeight());
+				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+				blurRenderer.render(szene, false, verticalBlurFbo);
+				
+//				//RENDER TO SCREEN
+//				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 				DisplayManager.updateDisplay();
 			}
@@ -117,6 +135,7 @@ public class MainGameLoop {
 	private static void initShaderProgramms() {
 		szene.setEntityShader(new EntityShaderProgram("res/shaders/entity/vertexShader.glsl", "res/shaders/entity/fragmentShader.glsl"));
 		szene.setPassthrough(new PassthroughShaderProgram("res/shaders/passthrough/vertexShader.glsl", "res/shaders/passthrough/fragmentShader.glsl"));
+		szene.setBlurShader(new BlurShaderProgram("res/shaders/blur/vertexShader.glsl", "res/shaders/blur/fragmentShader.glsl"));
 	}
 
 	/**
