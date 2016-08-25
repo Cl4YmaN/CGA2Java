@@ -1,36 +1,10 @@
 package de.sebastiankings.renderengine.utils;
 
-import static org.lwjgl.opengl.GL11.GL_FLOAT;
-import static org.lwjgl.opengl.GL11.GL_LINEAR;
-import static org.lwjgl.opengl.GL11.GL_LINEAR_MIPMAP_LINEAR;
-import static org.lwjgl.opengl.GL11.GL_REPEAT;
-import static org.lwjgl.opengl.GL11.GL_RGBA;
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_MAG_FILTER;
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_MIN_FILTER;
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_WRAP_S;
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_WRAP_T;
-import static org.lwjgl.opengl.GL11.GL_UNSIGNED_BYTE;
-import static org.lwjgl.opengl.GL11.glBindTexture;
-import static org.lwjgl.opengl.GL11.glDeleteTextures;
-import static org.lwjgl.opengl.GL11.glGenTextures;
-import static org.lwjgl.opengl.GL11.glTexImage2D;
-import static org.lwjgl.opengl.GL11.glTexParameteri;
-import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
-import static org.lwjgl.opengl.GL13.GL_TEXTURE_CUBE_MAP;
-import static org.lwjgl.opengl.GL13.glActiveTexture;
-import static org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER;
-import static org.lwjgl.opengl.GL15.GL_ELEMENT_ARRAY_BUFFER;
-import static org.lwjgl.opengl.GL15.GL_STATIC_DRAW;
-import static org.lwjgl.opengl.GL15.glBindBuffer;
-import static org.lwjgl.opengl.GL15.glBufferData;
-import static org.lwjgl.opengl.GL15.glDeleteBuffers;
-import static org.lwjgl.opengl.GL15.glGenBuffers;
-import static org.lwjgl.opengl.GL20.glVertexAttribPointer;
-import static org.lwjgl.opengl.GL30.glBindVertexArray;
-import static org.lwjgl.opengl.GL30.glDeleteVertexArrays;
-import static org.lwjgl.opengl.GL30.glGenVertexArrays;
-import static org.lwjgl.opengl.GL30.glGenerateMipmap;
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL13.*;
+import static org.lwjgl.opengl.GL15.*;
+import static org.lwjgl.opengl.GL20.*;
+import static org.lwjgl.opengl.GL30.*;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -48,7 +22,6 @@ import org.lwjgl.opengl.GL13;
 import de.matthiasmann.twl.utils.PNGDecoder;
 import de.matthiasmann.twl.utils.PNGDecoder.Format;
 import de.sebastiankings.renderengine.entities.Model;
-import de.sebastiankings.renderengine.entities.types.Skybox;
 import de.sebastiankings.renderengine.texture.PNGData;
 import de.sebastiankings.renderengine.texture.Texture;
 
@@ -65,17 +38,17 @@ public class LoaderUtils {
 		createVertexBuffer(0, 3, positions);
 		createVertexBuffer(1, 3, normals);
 		createVertexBuffer(2, 2, textureCoords);
-		createVertexBuffer(3, 3, emission);
-		createVertexBuffer(4, 3, ambient);
-		createVertexBuffer(5, 3, specular);
-		createVertexBuffer(6, 1, shininess);
+		// createVertexBuffer(3, 3, emission);
+		// createVertexBuffer(4, 3, ambient);
+		// createVertexBuffer(5, 3, specular);
+		// createVertexBuffer(6, 1, shininess);
 		unbindVAO();
 
 		// save VAO in RawModel
 		return new Model(vaoID, indices.length);
 	}
-	
-	public static Model loadToVao(float[] positions){
+
+	public static Model loadToVao(float[] positions) {
 		int vaoID = createVAO();
 		createVertexBuffer(0, 2, positions);
 		unbindVAO();
@@ -93,7 +66,7 @@ public class LoaderUtils {
 		// save VAO in Model
 		return new Model(vaoID, indices.length);
 	}
-	
+
 	public static Model loadSkyboxVAO(float[] positions) {
 		// create VAO and assign data
 		int vaoID = createVAO();
@@ -143,25 +116,24 @@ public class LoaderUtils {
 		return texture;
 	}
 
-	public static Texture loadCubeMapTexture(String folderName){
+	public static Texture loadCubeMapTexture(String folderName) {
 		int textureID = glGenTextures();
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
 		Texture texture = null;
 		PNGData front = loadPngData(folderName + "/front.png");
-		PNGData back = loadPngData(folderName+ "/back.png");
-		PNGData left = loadPngData(folderName+ "/left.png");
-		PNGData right = loadPngData(folderName+ "/right.png");
-		PNGData bottom = loadPngData(folderName+ "/bottom.png");
-		PNGData top = loadPngData(folderName+ "/top.png");
+		PNGData back = loadPngData(folderName + "/back.png");
+		PNGData left = loadPngData(folderName + "/left.png");
+		PNGData right = loadPngData(folderName + "/right.png");
+		PNGData bottom = loadPngData(folderName + "/bottom.png");
+		PNGData top = loadPngData(folderName + "/top.png");
 
-		
 		// create texture, activate and upload texture //
 		textureID = glGenTextures();
 		texture = new Texture(textureID);
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
-		//Bind Actual Texture Data
+		// Bind Actual Texture Data
 		glTexImage2D(GL13.GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, GL_RGBA, front.getWidth(), front.getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, front.getPictureData());
 		glTexImage2D(GL13.GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, GL_RGBA, back.getWidth(), back.getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, back.getPictureData());
 		glTexImage2D(GL13.GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, GL_RGBA, left.getWidth(), left.getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, left.getPictureData());

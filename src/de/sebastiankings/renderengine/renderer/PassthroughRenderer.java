@@ -17,15 +17,15 @@ public class PassthroughRenderer {
 
 	private final float[] QUADPOSITIONS = { -1, 1, -1, -1, 1, 1, 1, -1 };
 	private final Model QUAD = LoaderUtils.loadToVao(QUADPOSITIONS);
-		
-	public PassthroughRenderer(){
-		
+
+	public PassthroughRenderer() {
+
 	}
-	
-	public void render(Szene szene, Material m,PassthroughFrameBufferObject fbo){
+
+	public void render(Szene szene, Material m, PassthroughFrameBufferObject fbo) {
 		PassthroughShaderProgram passthroughShader = szene.getPassthrough();
 		passthroughShader.start();
-		passthroughShader.loadSliceLimits();
+		passthroughShader.loadSliceLimits(szene.getFocalPlaneShift());
 		passthroughShader.loadTextures();
 		passthroughShader.loadMaterial(m);
 		passthroughShader.loadLight(szene.getLights().get(0));

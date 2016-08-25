@@ -10,6 +10,9 @@ public class CombineShaderProgram extends ShaderProgram {
 	private int location_blurTextureSoft;
 	private int location_blurTextureStrong;
 
+	private int location_showDof;
+	private int location_showSplices;
+
 	public CombineShaderProgram(String vertexPath, String fragmentPath) {
 		super(vertexPath, fragmentPath);
 	}
@@ -21,6 +24,17 @@ public class CombineShaderProgram extends ShaderProgram {
 		location_focalPlane = super.getUniformLocation("focalPlane");
 		location_blurTextureSoft = super.getUniformLocation("blurTextureSoft");
 		location_blurTextureStrong = super.getUniformLocation("blurTextureStrong");
+
+		location_showDof = super.getUniformLocation("showDof");
+		location_showSplices = super.getUniformLocation("showSplices");
+	}
+
+	public void showDof(boolean showDof) {
+		super.loadFloat(location_showDof, showDof ? 1.0f : 0.0f);
+	}
+
+	public void showSplices(boolean showSplices) {
+		super.loadFloat(location_showSplices, showSplices ? 1.0f : 0.0f);
 	}
 
 	@Override

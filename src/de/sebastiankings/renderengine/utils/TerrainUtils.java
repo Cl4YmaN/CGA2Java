@@ -14,19 +14,22 @@ public class TerrainUtils {
 		LOGGER.debug("Generating Terrain");
 		float terrainHeight = -15f;
 		float halfWidth = width / 2;
+		float halflength = length / 2;
 		float[] vertices = {
 				// frontline
-				-halfWidth, terrainHeight, 0.0f, halfWidth, terrainHeight, 0.0f,
+				-halfWidth, terrainHeight, halflength, halfWidth, terrainHeight, halflength,
 				// horizontLine
-				-halfWidth, terrainHeight, -length, halfWidth, terrainHeight, -length };
+				-halfWidth, terrainHeight, -halflength, halfWidth, terrainHeight, -halflength };
 
-		 //float[] textures = { 0.0f, 0.0f, 0.0f, 1.0f, (float) (length * 0.8 /
+		// float[] textures = { 0.0f, 0.0f, 0.0f, 1.0f, (float) (length * 0.8 /
 		// halfWidth), 0.0f, (float) (length * 0.8/ halfWidth), 1.0f, };
-		float[] textures = { 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, 1.0f, };
+		float[] textures = { 0.0f, 0.0f, 0.0f, 3.0f, 3.0f, 0.0f, 3.0f, 3.0f, };
 
 		float[] normals = { 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f };
 
 		int[] indices = { 0, 1, 3, 0, 3, 2 };
+
+		// *******************MULTITEXTURING**********************//
 		Model terrainModel = LoaderUtils.loadTerrainVAO(vertices, textures, normals, indices);
 		Texture terrainTexture1 = LoaderUtils.loadTexture("res/terrain/gras.png");
 		Texture terrainTexture2 = LoaderUtils.loadTexture("res/terrain/way.png");

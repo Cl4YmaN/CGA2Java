@@ -53,19 +53,33 @@ public class MainGameLoop {
 
 			// Create Szene
 			List<Entity> entities = new ArrayList<Entity>();
-			for (int i = 0; i < 10; i++) {
-				for (int j = 0; j < 10; j++) {
-					Entity gumba = EntityFactory.createEntity(EntityType.CHAR_GUMBA_OLD);
-					gumba.moveEntityGlobal(new Vector3f(20.0f * j, 0, 20.0f * i));
-					gumba.rotateY(180.0f);
+			entities.add(TerrainUtils.generateTerrain(400, 400));
+			for (int i = -5; i < 5; i++) {
+				for (int j = -5; j < 5; j++) {
+					Entity gumba = EntityFactory.createEntity(EntityType.BLOCK_QUESTION);
+					gumba.moveEntityGlobal(new Vector3f(50.0f * j, 30.0f, 50.0f * i));
+					// gumba.rotateY(180.0f);
 					entities.add(gumba);
 				}
 			}
-			
-			entities.add(TerrainUtils.generateTerrain(200, 100));
+
+			for (int i = -5; i < 5; i++) {
+				for (int j = -5; j < 5; j++) {
+					Entity gumba = null;
+					if (i % 2 == 0) {
+						gumba = EntityFactory.createEntity(EntityType.CHAR_MARIO);
+					} else {
+						gumba = EntityFactory.createEntity(EntityType.CHAR_GUMBA);
+					}
+					gumba.moveEntityGlobal(new Vector3f(50.0f * j, 0.0f, 50.0f * i));
+					// gumba.rotateY(180.0f);
+					entities.add(gumba);
+				}
+			}
+
 			List<PointLight> lights = new ArrayList<PointLight>();
-			lights.add(new PointLight(new Vector3f(50.0f, 50.0f, 50.0f), new Vector3f(1.0f), new Vector3f(1.0f), new Vector3f(1.0f)));
-			Material m = new Material(new Vector3f(0.2f), new Vector3f(0.2f), new Vector3f(0.2f), 50.0f);
+			lights.add(new PointLight(new Vector3f(500.0f, 500.0f, 500.0f), new Vector3f(1.0f), new Vector3f(1.0f), new Vector3f(1.0f)));
+			Material m = new Material(new Vector3f(0.0f), new Vector3f(0.2f), new Vector3f(1f), 1050.0f);
 			Inputs inputs = new Inputs();
 			inputs.registerInputs(windowId);
 			szene = new Szene(entities, lights, new Camera(), inputs);
@@ -79,11 +93,11 @@ public class MainGameLoop {
 			// INIT FBOS
 			PassthroughFrameBufferObject passthroughFbo = new PassthroughFrameBufferObject(DisplayManager.getWidth(), DisplayManager.getHeight());
 
-			BlurFrameBufferObject horizontalBlurStrongFbo = new BlurFrameBufferObject(DisplayManager.getWidth() / 4, DisplayManager.getHeight() / 4);
-			BlurFrameBufferObject verticalBlurStrongFbo = new BlurFrameBufferObject(DisplayManager.getWidth() / 4, DisplayManager.getHeight() / 4);
-			
-			BlurFrameBufferObject horizontalBlurSoftFbo = new BlurFrameBufferObject(DisplayManager.getWidth() / 4, DisplayManager.getHeight() / 4);
-			BlurFrameBufferObject verticalBlurSoftFbo = new BlurFrameBufferObject(DisplayManager.getWidth() / 4, DisplayManager.getHeight() / 4);
+			BlurFrameBufferObject horizontalBlurStrongFbo = new BlurFrameBufferObject(DisplayManager.getWidth() / 1, DisplayManager.getHeight() / 1);
+			BlurFrameBufferObject verticalBlurStrongFbo = new BlurFrameBufferObject(DisplayManager.getWidth() / 1, DisplayManager.getHeight() / 1);
+
+			BlurFrameBufferObject horizontalBlurSoftFbo = new BlurFrameBufferObject(DisplayManager.getWidth() / 2, DisplayManager.getHeight() / 2);
+			BlurFrameBufferObject verticalBlurSoftFbo = new BlurFrameBufferObject(DisplayManager.getWidth() / 2, DisplayManager.getHeight() / 2);
 
 			DepthOfFieldFrameBufferObject depthOfFieldInput = new DepthOfFieldFrameBufferObject(DisplayManager.getWidth(), DisplayManager.getHeight());
 			DepthOfFieldFrameBufferObject depthOfFieldOutput = new DepthOfFieldFrameBufferObject(DisplayManager.getWidth(), DisplayManager.getHeight());
@@ -94,14 +108,13 @@ public class MainGameLoop {
 			while (glfwWindowShouldClose(windowId) == GL_FALSE) {
 				// setDeltatime
 				long deltaTime = System.currentTimeMillis() - lastStartTime;
-				LOGGER.debug("Last Frametime: " + deltaTime);
+				// LOGGER.debug("Last Frametime: " + deltaTime);
 				lastStartTime = System.currentTimeMillis();
 				handleInputs(deltaTime);
 
 				szene.getCamera().updateViewMatrix();
 
-				// render(m, entityRenderer, passthrough, blurRenderer, passthroughFbo, horizontalBlurFbo, verticalBlurFbo);
-				renderDof(m, entityRenderer, passthrough, blurRenderer, combineRederer, passthroughFbo, depthOfFieldInput, depthOfFieldOutput, horizontalBlurStrongFbo, verticalBlurStrongFbo,horizontalBlurSoftFbo, verticalBlurSoftFbo);
+				renderDof(deltaTime, m, entityRenderer, passthrough, blurRenderer, combineRederer, passthroughFbo, depthOfFieldInput, depthOfFieldOutput, horizontalBlurStrongFbo, verticalBlurStrongFbo, horizontalBlurSoftFbo, verticalBlurSoftFbo);
 			}
 			LOGGER.info("Ending Gameloop! Cleaning Up");
 			cleanUp();
@@ -115,59 +128,41 @@ public class MainGameLoop {
 		}
 	}
 
-	private static void render(Material m, EntityRenderer entityRenderer, PassthroughRenderer passthrough, BlurRenderer blurRenderer, PassthroughFrameBufferObject passthroughFbo, BlurFrameBufferObject horizontalBlurFbo, BlurFrameBufferObject verticalBlurFbo) {
+	private static void renderDof(float deltatime, Material m, EntityRenderer entityRenderer, PassthroughRenderer passthrough, BlurRenderer blurRenderer, CombineRenderer combineRenderer, PassthroughFrameBufferObject passthroughFbo, DepthOfFieldFrameBufferObject dofIn, DepthOfFieldFrameBufferObject dofOut, BlurFrameBufferObject horizontalBlurStrongFbo, BlurFrameBufferObject verticalBlurStrongFbo,
+			BlurFrameBufferObject horizontalBlurSoftFbo, BlurFrameBufferObject verticalBlurSoftFbo) {
 		// GEOMETRY PASS
 		passthroughFbo.bind();
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		entityRenderer.render();
 
-		// SHADING PASS
-		horizontalBlurFbo.bind();
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		passthrough.render(szene, m, passthroughFbo);
-
-		// HORIZONTAL BLUR
-		verticalBlurFbo.bind();
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		blurRenderer.render(szene, true, horizontalBlurFbo, horizontalBlurFbo.getFrameDataTexture());
-		//
-		// //VERTICAL BLUR
-		verticalBlurFbo.unbind(DisplayManager.getWidth(), DisplayManager.getHeight());
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		blurRenderer.render(szene, false, verticalBlurFbo, verticalBlurFbo.getFrameDataTexture());
-
-		// //RENDER TO SCREEN
-		// glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-		DisplayManager.updateDisplay();
-	}
-
-	private static void renderDof(Material m, EntityRenderer entityRenderer, PassthroughRenderer passthrough, BlurRenderer blurRenderer, CombineRenderer combineRenderer, PassthroughFrameBufferObject passthroughFbo, DepthOfFieldFrameBufferObject dofIn, DepthOfFieldFrameBufferObject dofOut, BlurFrameBufferObject horizontalBlurStrongFbo, BlurFrameBufferObject verticalBlurStrongFbo,BlurFrameBufferObject horizontalBlurSoftFbo, BlurFrameBufferObject verticalBlurSoftFbo) {
-		// GEOMETRY PASS
-		passthroughFbo.bind();
+		// Move Entities;
+		for (int i = 0; i < szene.getEntities().size(); i++) {
+			if (i == 0) {
+				continue;
+			}
+			Entity entity = szene.getEntities().get(i);
+			entity.rotateY((float) Math.toRadians(0.1) * deltatime);
+		}
 		entityRenderer.render();
 
 		// SHADING PASS + SLICING FOR DOF
 		dofIn.bind();
 		passthrough.render(szene, m, passthroughFbo);
-		
-		//Strong blur
-		horizontalBlurStrongFbo.bind();
-		blurRenderer.render(szene, true, dofIn, dofIn.getFocalPlane());
-		verticalBlurStrongFbo.bind();
-		blurRenderer.render(szene, false, dofIn, horizontalBlurStrongFbo.getFrameDataTexture());
 
-		//Soft blur
+		// Soft blur
 		horizontalBlurSoftFbo.bind();
 		blurRenderer.render(szene, true, dofIn, dofIn.getFocalPlane());
 		verticalBlurSoftFbo.bind();
 		blurRenderer.render(szene, false, dofIn, horizontalBlurSoftFbo.getFrameDataTexture());
-		
-		
-//		// //RENDER TO SCREEN
+
+		// Strong blur
+		horizontalBlurStrongFbo.bind();
+		blurRenderer.render(szene, true, dofIn, verticalBlurSoftFbo.getFrameDataTexture());
+		verticalBlurStrongFbo.bind();
+		blurRenderer.render(szene, false, dofIn, horizontalBlurStrongFbo.getFrameDataTexture());
+
+		// // //RENDER TO SCREEN
 		verticalBlurSoftFbo.unbind(DisplayManager.getWidth(), DisplayManager.getHeight());
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		combineRenderer.render(szene, dofIn,verticalBlurSoftFbo,verticalBlurStrongFbo);
+		combineRenderer.render(szene, dofIn, verticalBlurSoftFbo, verticalBlurStrongFbo);
 
 		DisplayManager.updateDisplay();
 	}
@@ -221,6 +216,33 @@ public class MainGameLoop {
 			cam.moveBackward();
 		}
 		if (inputs.keyPressed(GLFW_KEY_SPACE)) {
+		}
+
+		// ENABLE DOF
+		if (inputs.keyPressed(GLFW_KEY_U)) {
+			szene.setShowDof(true);
+		}
+		// DISABLE DOF
+		if (inputs.keyPressed(GLFW_KEY_J)) {
+			szene.setShowDof(false);
+		}
+
+		// ENABLE DOF
+		if (inputs.keyPressed(GLFW_KEY_I)) {
+			szene.setShowSplices(true);
+		}
+		// DISABLE DOF
+		if (inputs.keyPressed(GLFW_KEY_K)) {
+			szene.setShowSplices(false);
+		}
+
+		// ENABLE DOF
+		if (inputs.keyPressed(GLFW_KEY_O)) {
+			szene.incrementFocalPlaneShift();
+		}
+		// DISABLE DOF
+		if (inputs.keyPressed(GLFW_KEY_L)) {
+			szene.decrementFocalPlaneShift();
 		}
 	}
 

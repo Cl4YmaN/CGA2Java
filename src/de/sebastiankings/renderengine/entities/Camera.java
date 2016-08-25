@@ -20,7 +20,7 @@ public class Camera {
 	private Vector3f camPos = new Vector3f();
 	private Vector3f lookDir = new Vector3f();
 
-	private float theta = (float) Math.PI * 0.3f;
+	private float theta = (float) Math.PI * 0.0f;
 	private float phi = (float) Math.PI * 0.0f;
 	private float camDist = 28.0f;
 
@@ -32,9 +32,9 @@ public class Camera {
 
 	public void loadDefaultCamSettings(Vector3f playerPosition) {
 		this.projectionMatrix = createProjectionMatrix(.5f, 2000.0f);
-		this.camPos = new Vector3f(10, 10, 10);
-		this.lookDir = new Vector3f(0, -1, 0);
-		this.theta = (float) Math.PI * 0.3f;
+		this.camPos = new Vector3f(170, 25, 246);
+		this.lookDir = new Vector3f(0.67f, 0.19f, 0.72f);
+		this.theta = (float) Math.PI * 0.0f;
 		this.phi = (float) Math.PI * 0.0f;
 	}
 
@@ -111,6 +111,7 @@ public class Camera {
 	}
 
 	public void updateViewMatrix() {
+		LOGGER.debug("Current Camera Posission:" + getCurrentLookDirection());
 		lookDir = getCurrentLookDirection().negate();//
 		Vector3f lookAt = new Vector3f(camPos).add(new Vector3f(new Vector3f(lookDir)));
 		viewMatrix = new Matrix4f().lookAt(camPos, lookAt, DEFAULT_UP);

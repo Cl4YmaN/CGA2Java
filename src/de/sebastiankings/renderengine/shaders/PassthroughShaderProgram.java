@@ -10,7 +10,7 @@ import de.sebastiankings.renderengine.entities.PointLight;
 
 public class PassthroughShaderProgram extends ShaderProgram {
 	private static final Logger LOGGER = Logger.getLogger(PassthroughShaderProgram.class);
-	
+
 	private int location_transformationMatrix;
 	private int location_viewMatrix;
 
@@ -39,26 +39,25 @@ public class PassthroughShaderProgram extends ShaderProgram {
 		super(vertexPath, fragmentPath);
 	}
 
-	public void loadSliceLimits() {
+	public void loadSliceLimits(float focalPlaneShift) {
 		float near = 0.5f;
 		float far = 2000.0f;
 		float min = 1 / (near + far);
 		float max = 1 / (near + far) - (far - near);
 		float range = 1 - min;
-		float tenPercent = range / 10;
-		
-		loadFloat(location_limitBlurStrongFront,tenPercent * 0.02f);
-		loadFloat(location_limitBlurSoftFront,tenPercent * 0.1f);
-		loadFloat(location_limitFocalPlane,tenPercent * 0.6f);
-		loadFloat(location_limitBlurSoftBack,tenPercent * 0.9f);
-		loadFloat(location_limitBlurStrongBack,tenPercent * 10);
-		
-//		LOGGER.debug(tenPercent * 1);
-//		LOGGER.debug(tenPercent * 2);
-//		LOGGER.debug(tenPercent * 6);
-//		LOGGER.debug(tenPercent * 9);
-//		LOGGER.debug(tenPercent * 10);
-		
+		float percent = range / 100;
+
+		loadFloat(location_limitBlurStrongFront, percent * 5f + (focalPlaneShift * percent));
+		loadFloat(location_limitBlurSoftFront, percent * 7f + (focalPlaneShift * percent));
+		loadFloat(location_limitFocalPlane, percent * 20f + (focalPlaneShift * percent));
+		loadFloat(location_limitBlurSoftBack, percent * 40f + (focalPlaneShift * percent));
+		loadFloat(location_limitBlurStrongBack, percent * 100f);
+
+		// LOGGER.debug(tenPercent * 1);
+		// LOGGER.debug(tenPercent * 2);
+		// LOGGER.debug(tenPercent * 6);
+		// LOGGER.debug(tenPercent * 9);
+		// LOGGER.debug(tenPercent * 10);
 
 	}
 
@@ -129,7 +128,6 @@ public class PassthroughShaderProgram extends ShaderProgram {
 		setFragDataLocation(0, "blurStrong");
 		setFragDataLocation(1, "blurSoft");
 		setFragDataLocation(2, "focalPlane");
-		
 
 	}
 }

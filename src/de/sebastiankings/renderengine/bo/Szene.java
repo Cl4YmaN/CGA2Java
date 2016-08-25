@@ -23,6 +23,11 @@ public class Szene {
 	private BlurShaderProgram blurShader;
 	private CombineShaderProgram combineShader;
 
+	private boolean showDof;
+	private boolean showSplices;
+
+	private float focalPlaneShift;
+
 	public void setBlurShader(BlurShaderProgram blurShader) {
 		this.blurShader = blurShader;
 	}
@@ -92,6 +97,40 @@ public class Szene {
 
 	public void setCombineShader(CombineShaderProgram combineShader) {
 		this.combineShader = combineShader;
+	}
+
+	public boolean getShowDof() {
+		return showDof;
+	}
+
+	public void setShowDof(boolean showDof) {
+		this.showDof = showDof;
+	}
+
+	public boolean getShowSplices() {
+		return showSplices;
+	}
+
+	public void setShowSplices(boolean showSplices) {
+		this.showSplices = showSplices;
+	}
+
+	public float getFocalPlaneShift() {
+		return focalPlaneShift;
+	}
+
+	public void incrementFocalPlaneShift() {
+		if (focalPlaneShift < 40) {
+			focalPlaneShift += 0.01f;
+		}
+
+	}
+
+	public void decrementFocalPlaneShift() {
+		if (focalPlaneShift > -5) {
+			focalPlaneShift -= 0.01f;
+		}
+
 	}
 
 }
